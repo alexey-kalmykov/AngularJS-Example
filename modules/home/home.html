@@ -1,0 +1,178 @@
+<div class="panel panel-default">
+  <div class="panel-body">
+    <div ng-controller="HomeController">
+
+      <h1>{{ user.name }}</h1>
+
+      <div class="btn-group">
+        <button
+        ng-repeat="button in conf.modes"
+        ng-click="data.mode=button.value"
+        type="button"
+        class="btn btn-default navbar-btn"
+        title="{{button.label}}"
+        ><span class="{{button.glyph}}"></span></button>
+      </div>
+
+      <div ng-switch on="data.mode">
+        <!-- Редактирование -->
+        <div ng-switch-when="Task" class="jumbotron">
+          <div class="container">
+            <div class="form-group">
+              <label>Название</label>
+              <input
+              type="text"
+              class="form-control"
+              ng-model="user.tasks[data.snum].Name"
+              readonly>
+            </div>
+            <div class="form-group">
+              <label>Описание</label>
+              <input type="text"
+              class="form-control"
+              ng-model="user.tasks[data.snum].Title"
+              readonly>
+            </div>
+            <div class="form-group">
+              <label>Дата</label>
+              <input
+              type="date"
+              class="form-control"
+              ng-model="user.tasks[data.snum].Day"
+              format-date
+              readonly>
+            </div>
+            <div class="form-group">
+              <label>Приоритет</label>
+              <input
+              type="text"
+              class="form-control"
+              ng-model="conf.prior[user.tasks[data.snum].Priority]"
+              readonly>
+            </div>
+            <div class="form-group">
+              <label>Время по плану</label>
+              <input
+              type="number"
+              class="form-control"
+              ng-model="user.tasks[data.snum].PlanTime">
+            </div>
+            <div class="form-group">
+              <label>Время по факту</label>
+              <input
+              type="number"
+              class="form-control"
+              ng-model="user.tasks[data.snum].FactTime">
+            </div>
+            <div class="form-group">
+              <label>Статус</label>
+              <select
+              class="form-control"
+              ng-model="user.tasks[data.snum].Status"
+              ng-options="key as value for (key, value) in conf.words">
+              </select>
+            </div>
+          </div>
+        </div>
+        <!-- Подробно -->
+        <div ng-switch-when="Table">
+          <select ng-model="search.Status">
+            <option value="" selected>Все</option>
+            <option ng-repeat="(key, value) in conf.words" value="{{key}}">
+              {{value}}
+            </option>
+          </select>
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th ng-click="sort('Name')">Название</th>
+                <th ng-click="sort('Title')">Описание</th>
+                <th ng-click="sort('Day')">Дата</th>
+                <th ng-click="sort('Priority')">Приоритет</th>
+                <th ng-click="sort('PlanTime')">Планируемое время</th>
+                <th ng-click="sort('FactTime')">Затраченное время</th>
+                <th ng-click="sort('Status')">Статус выполнения</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="clickable-row"
+              ng-repeat="x in user.tasks | orderBy:conf.sortOrder | filter:search"
+              ng-click="oneTask(x.Id)">
+                <td>{{x.Name}}</td>
+                <td>{{x.Title}}</td>
+                <td>{{x.Day}}</td>
+                <td>{{conf.prior[x.Priority]}}</td>
+                <td>{{x.PlanTime}} ч.</td>
+                <td>{{x.FactTime}} ч.</td>
+                <td>
+                  <span class="label label-{{conf.labels[x.Status]}}">
+                    {{conf.words[x.Status]}}
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <!-- Scrum доска -->
+        <div ng-switch-when="Scrum">
+          <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th ng-repeat="s in conf.words">{{s}}</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td
+                ng-repeat="(key, value) in conf.labels"
+                data-ng-value="search.Status = key"
+                id="td-{{key}}"
+                droppable
+                drop="handleDrop(key)"
+                >
+                  <div
+                   class="alert alert-{{value}}"
+                   ng-repeat="x in user.tasks | orderBy:'Priority' | filter:search"
+                   id="div-{{x.Id}}"
+                   draggable
+                   >
+                    <p>{{x.Name}}</p>
+                    <p>{{x.Title}}</p>
+                    <p>{{x.Day}}</p>
+                    <p>{{conf.prior[x.Priority]}}</p>
+                  </div>
+                </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+        <!-- Лист -->
+        <div ng-switch-default>
+          <table class="table table-hover">
+          <thead>
+            <tr>
+              <th>Название</th>
+              <th>Описание</th>
+              <th>Статус</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat="x in user.tasks"
+            class="clickable-row"
+            ng-click="oneTask(x.Id)">
+              <td>{{ x.Name }}</td>
+              <td>{{ x.Title }}</td>
+              <td>
+                <span class="label label-{{conf.labels[x.Status]}}">
+                  {{conf.words[x.Status]}}
+                </span>
+              </td>
+            </tr>
+          </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <p><a href="#/login">Выйти</a></p>
+  </div>
+</div>
