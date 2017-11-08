@@ -1,0 +1,40 @@
+{
+  "conf" :
+  {
+    "labels": [
+      "success",
+      "info",
+      "warning",
+      "danger"
+    ],
+    "words" : [
+  	  "В планах",
+  	  "Разработка",
+  	  "Тестирование",
+  	  "Готово"
+    ],
+  	  "prior" : [
+  	  "высокий",
+  	  "средний",
+  	  "низкий"
+    ],
+      "modes" : [
+        {
+          "value": "List",
+          "label": "Кратко",
+          "glyph": "glyphicon glyphicon-list"
+        },
+        {
+          "value": "Table",
+          "label": "Подробно",
+          "glyph": "glyphicon glyphicon-list-alt"
+        },
+        {
+          "value": "Scrum",
+          "label": "Scrum",
+          "glyph": "glyphicon glyphicon-tasks"
+        }
+    ],
+  	"sortOrder" : "Id"
+  }
+}
